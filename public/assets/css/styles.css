@@ -6,7 +6,7 @@ body {
 }
 
 .save-note {
-  display: block;
+  display: none;
 }
 
 .icons i {

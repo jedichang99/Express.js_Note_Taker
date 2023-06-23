@@ -4,9 +4,9 @@ const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+//app.use(express.urlencoded({ extended: true }));
+
 app.use(express.static("public"));
 
 // Function to generate a unique ID for a new note
@@ -22,29 +22,19 @@ function generateUniqueId(notes) {
 }
 
 app.get("/notes", (req, res) => {
-  res.sendFile(path.join(__dirname, "/public/notes.html"));
+  res.sendFile(path.join(__dirname, "./public/notes.html"));
 });
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "/public/index.html"));
+  res.sendFile(path.join(__dirname, "./public/index.html"));
 });
 
 app.get("/api/notes", (req, res) => {
-  fs.readFile("../../../db/db.json", "utf8", (err, data) => {
-    if (err) {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ error: "An error occurred while reading notes data." });
-    }
-
-    const notes = JSON.parse(data);
-    res.json(notes);
-  });
+  fs.readFile('./db/db.json', 'utf-8', (err, data) => res.send(data))
 });
 
 app.post("/api/notes", (req, res) => {
-  fs.readFile("../../../db/db.json", "utf8", (err, data) => {
+  fs.readFile("./db/db.json", "utf8", (err, data) => {
     if (err) {
       console.error(err);
       return res
@@ -54,10 +44,10 @@ app.post("/api/notes", (req, res) => {
 
     const notes = JSON.parse(data);
     const newNote = req.body;
-    newNote.id = generateUniqueId(notes);
+    newNote.id = Math.floor(Math.random() * 10000000000) + 1;
     notes.push(newNote);
 
-    fs.writeFile("../../../db/db.json", JSON.stringify(notes), (err) => {
+    fs.writeFile("./db/db.json", JSON.stringify(notes), (err) => {
       if (err) {
         console.error(err);
         return res
